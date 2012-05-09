@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rspec')
   s.add_development_dependency('mysql')
 
-  s.files = ['MIT-LICENSE', 'README', 'VERSION', 'sql_tagger.gemspec'] +
+  s.files = ['MIT-LICENSE', 'README.rdoc', 'VERSION', 'sql_tagger.gemspec'] +
     Dir.glob('lib/**/*')
 
   s.test_files = Dir.glob('spec/**/*')
