@@ -55,6 +55,12 @@ class SqlTagger
     def self.included(base)
       base.send(:alias_method, :initialize_without_sql_tagger, :initialize)
       base.send(:alias_method, :initialize, :initialize_with_sql_tagger)
+
+      # This is for the odd case where a SQL gem/library is used before
+      # sql_tagger is required.
+      ObjectSpace.each_object(base) do |obj|
+        obj.sql_tagger ||= SqlTagger.default
+      end
     end
 
     # @return [SqlTagger] the SqlTagger used to tag queries for this instance
