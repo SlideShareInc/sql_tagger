@@ -1,9 +1,12 @@
 require 'sql_tagger'
 
 describe SqlTagger do
+  before :each do
+    @sql_tagger = SqlTagger.new
+  end
+
   describe '#tag' do
     before :each do
-      @sql_tagger = SqlTagger.new
       prefix = '/usr'
       @sql_tagger.exclusion_pattern = /^#{prefix}/
 
@@ -44,6 +47,19 @@ describe SqlTagger do
       @caller_result.push(correct_string)
       @sql_tagger.exclusion_cache.add(@valid_stack_string)
       @sql_tagger.tag(@sql).should == "/* #{correct_string} */ #{@sql}"
+    end
+  end
+
+  describe '#exclusion_pattern=' do
+    it 'sets @exclusion_pattern' do
+      @sql_tagger.exclusion_pattern = /regexp/
+      @sql_tagger.exclusion_pattern.should == /regexp/
+    end
+
+    it 'clears @exclusion_cache' do
+      @sql_tagger.exclusion_cache.merge(['/usr', '/opt'])
+      @sql_tagger.exclusion_pattern = /regexp/
+      @sql_tagger.exclusion_cache.should be_empty
     end
   end
 

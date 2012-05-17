@@ -10,7 +10,7 @@ class SqlTagger
   #   regular expression used to match stack strings we should skip (usually
   #   because such stack strings aren't specific enough, like stack strings
   #   where the file belongs to a gem)
-  attr_accessor :exclusion_pattern
+  attr_reader :exclusion_pattern
 
   # @return [Set] set that holds stack strings we skipped before
   attr_reader :exclusion_cache
@@ -40,6 +40,14 @@ class SqlTagger
 
     # Just in case we skip the whole stack somehow ...
     "/* SqlTagger#tag skipped the whole stack */ #{sql}"
+  end
+
+  # Sets +@exclusion_pattern+.
+  #
+  # @param [Regexp] regexp regular expression to be used to skip stack strings
+  def exclusion_pattern=(regexp)
+    @exclusion_pattern = regexp
+    @exclusion_cache.clear
   end
 
   @default = self.new
