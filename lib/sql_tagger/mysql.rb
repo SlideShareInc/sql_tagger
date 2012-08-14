@@ -1,8 +1,14 @@
 require 'sql_tagger'
 require 'mysql'
 
-class Mysql
-  include SqlTagger::Initializer
+module SqlTagger::Mysql
+  def self.included(base)
+    base.send(:include, SqlTagger::Initializer)
+    ['query', 'prepare'].each do |method|
+      base.send(:alias_method, "#{method}_without_sql_tagger", method)
+      base.send(:alias_method, method, "#{method}_with_sql_tagger")
+    end
+  end
 
   # @see Mysql#query
   def query_with_sql_tagger(sql, &block)
@@ -13,9 +19,6 @@ class Mysql
   def prepare_with_sql_tagger(query)
     prepare_without_sql_tagger(@sql_tagger.tag(query))
   end
-
-  ['query', 'prepare'].each do |method|
-    alias_method "#{method}_without_sql_tagger", method
-    alias_method method, "#{method}_with_sql_tagger"
-  end
 end
+
+Mysql.send(:include, SqlTagger::Mysql)
