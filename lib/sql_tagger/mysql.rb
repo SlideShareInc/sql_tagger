@@ -2,13 +2,7 @@ require 'sql_tagger'
 require 'mysql'
 
 module SqlTagger::Mysql
-  def self.included(base)
-    base.send(:include, SqlTagger::Initializer)
-    ['query', 'prepare'].each do |method|
-      base.send(:alias_method, "#{method}_without_sql_tagger", method)
-      base.send(:alias_method, method, "#{method}_with_sql_tagger")
-    end
-  end
+  extend SqlTagger::ModuleMethods
 
   # @see Mysql#query
   def query_with_sql_tagger(sql, &block)
