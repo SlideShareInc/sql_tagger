@@ -5,6 +5,7 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/SlideShareInc/sql_tagger'
   s.summary = 'Stack trace comments for SQL queries'
   s.description = 'sql_tagger inserts stack trace comments into SQL queries.'
+  s.license = 'MIT'
 
   s.add_development_dependency('rspec')
   s.add_development_dependency('mysql')
