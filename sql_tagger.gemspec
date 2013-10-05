@@ -7,7 +7,8 @@ Gem::Specification.new do |s|
   s.description = 'sql_tagger inserts stack trace comments into SQL queries.'
   s.license = 'MIT'
 
-  s.add_development_dependency('rspec')
+  s.add_development_dependency('rspec', '~> 2.11')
+
   s.add_development_dependency('mysql')
   s.add_development_dependency('mysql2')
 
