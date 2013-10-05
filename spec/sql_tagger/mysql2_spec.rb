@@ -15,7 +15,7 @@ describe Mysql2::Client do
   describe '#query' do
     it 'works' do
       results = @db.query('SELECT 1 AS one', :symbolize_keys => true)
-      results.to_a.should == [{:one => 1}]
+      expect(results.to_a).to eq([{:one => 1}])
     end
 
     it 'calls SqlTagger#tag' do

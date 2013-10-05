@@ -22,7 +22,7 @@ describe SqlTagger do
     end
 
     it 'skips stack strings that match @exclusion_pattern' do
-      @sql_tagger.tag(@sql).should == "/* #{@valid_stack_string} */ #{@sql}"
+      expect(@sql_tagger.tag(@sql)).to eq("/* #{@valid_stack_string} */ #{@sql}")
     end
 
     it 'returns the 1st stack string that does not match @exclusion_pattern' do
@@ -30,45 +30,45 @@ describe SqlTagger do
         '/home/app/myapp/lib/document.rb:788',
         '/home/app/myapp/runner.rb:29'
       )
-      @sql_tagger.tag(@sql).should == "/* #{@valid_stack_string} */ #{@sql}"
+      expect(@sql_tagger.tag(@sql)).to eq("/* #{@valid_stack_string} */ #{@sql}")
     end
 
     it 'adds skipped stack strings into @exclusion_cache' do
-      @sql_tagger.exclusion_cache.should be_empty
+      expect(@sql_tagger.exclusion_cache).to be_empty
       @sql_tagger.tag(@sql)
       @stack_strings_to_skip.each do |string|
-        @sql_tagger.exclusion_cache.should include(string)
+        expect(@sql_tagger.exclusion_cache).to include(string)
       end
-      @sql_tagger.exclusion_cache.size.should == @stack_strings_to_skip.length
+      expect(@sql_tagger.exclusion_cache.size).to eq(@stack_strings_to_skip.length)
     end
 
     it 'skips strings in @exclusion_cache' do
       correct_string = '/home/myapp/i.rb:2890'
       @caller_result.push(correct_string)
       @sql_tagger.exclusion_cache.add(@valid_stack_string)
-      @sql_tagger.tag(@sql).should == "/* #{correct_string} */ #{@sql}"
+      expect(@sql_tagger.tag(@sql)).to eq("/* #{correct_string} */ #{@sql}")
     end
   end
 
   describe '#exclusion_pattern=' do
     it 'sets @exclusion_pattern' do
       @sql_tagger.exclusion_pattern = /regexp/
-      @sql_tagger.exclusion_pattern.should == /regexp/
+      expect(@sql_tagger.exclusion_pattern).to eq(/regexp/)
     end
 
     it 'clears @exclusion_cache' do
       @sql_tagger.exclusion_cache.merge(['/usr', '/opt'])
       @sql_tagger.exclusion_pattern = /regexp/
-      @sql_tagger.exclusion_cache.should be_empty
+      expect(@sql_tagger.exclusion_cache).to be_empty
     end
   end
 
   describe '.default' do
     it 'returns a functional SqlTagger' do
-      SqlTagger.default.should be_a(SqlTagger)
+      expect(SqlTagger.default).to be_a(SqlTagger)
       # The following is to ensure that SqlTagger.default is set after
       # #initialize is defined.
-      SqlTagger.default.exclusion_pattern.should be_a(Regexp)
+      expect(SqlTagger.default.exclusion_pattern).to be_a(Regexp)
     end
   end
 end

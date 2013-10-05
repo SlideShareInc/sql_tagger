@@ -15,13 +15,13 @@ describe Mysql do
   describe '#query' do
     it 'works' do
       result = @db.query('SELECT 2')
-      result.fetch_row.should == ['2']
+      expect(result.fetch_row).to eq(['2'])
       result.free
     end
 
     it 'works when given a block' do
       @db.query('SELECT 5') do |result|
-        result.fetch_row.should == ['5']
+        expect(result.fetch_row).to eq(['5'])
       end
     end
 
@@ -35,7 +35,7 @@ describe Mysql do
     it 'works' do
       stmt = @db.prepare('SELECT ?')
       stmt.execute(9)
-      stmt.fetch.should == ['9']
+      expect(stmt.fetch).to eq(['9'])
       stmt.free_result
       stmt.close
     end
