@@ -16,7 +16,7 @@ describe SqlTagger do
       ]
       @valid_stack_string = '/home/app/myapp/lib/user.rb:150'
       @caller_result = @stack_strings_to_skip + [@valid_stack_string]
-      @sql_tagger.stub!(:caller => @caller_result)
+      allow(@sql_tagger).to receive(:caller).and_return(@caller_result)
 
       @sql = 'SELECT 1'
     end
