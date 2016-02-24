@@ -1,6 +1,6 @@
 require 'sql_tagger'
 
-describe SqlTagger do
+RSpec.describe SqlTagger do
   before :each do
     @sql_tagger = SqlTagger.new
   end

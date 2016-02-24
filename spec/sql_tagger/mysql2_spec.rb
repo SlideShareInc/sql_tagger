@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'sql_tagger/mysql2'
 
-describe Mysql2::Client do
+RSpec.describe Mysql2::Client do
   before :all do
     @db = Mysql2::Client.new
   end

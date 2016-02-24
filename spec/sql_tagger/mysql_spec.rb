@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'sql_tagger/mysql'
 
-describe Mysql do
+RSpec.describe Mysql do
   let(:query) { 'SELECT 1' }
 
   before :all do
