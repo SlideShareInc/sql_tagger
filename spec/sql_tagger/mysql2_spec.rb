@@ -19,8 +19,10 @@ describe Mysql2::Client do
     end
 
     it 'calls SqlTagger#tag' do
-      @db.sql_tagger.should_receive(:tag).and_return('/* something.rb */ SELECT 1')
-      @db.query('SELECT 1')
+      query = 'SELECT 1'
+      expect(@db.sql_tagger).to receive(:tag).with(query).
+        and_return("/* something.rb */ #{query}")
+      @db.query(query)
     end
   end
 end
