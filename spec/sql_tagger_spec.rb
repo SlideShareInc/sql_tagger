@@ -4,47 +4,48 @@ RSpec.describe SqlTagger do
   subject(:sql_tagger) { SqlTagger.new }
 
   describe '#tag' do
-    before :each do
-      prefix = '/usr'
-      sql_tagger.exclusion_pattern = /^#{prefix}/
-
-      @stack_strings_to_skip = [
-        "#{prefix}/lib//gems/activerecord-2.3.5/lib/active_record/base.rb:500",
-        "#{prefix}//gems/actionpack-2.3.5/lib/something.rb:20",
+    let(:prefix) { '/usr' }
+    let(:stack_strings_to_skip) do
+      [
+        "#{prefix}/lib/gems/activerecord-2.3.5/lib/active_record/base.rb:500",
+        "#{prefix}/gems/actionpack-2.3.5/lib/something.rb:20",
       ]
-      @valid_stack_string = '/home/app/myapp/lib/user.rb:150'
-      @caller_result = @stack_strings_to_skip + [@valid_stack_string]
-      allow(sql_tagger).to receive(:caller).and_return(@caller_result)
+    end
+    let(:valid_stack_string) { '/home/app/myapp/lib/user.rb:150' }
+    let(:caller_result) { stack_strings_to_skip + [valid_stack_string] }
+    let(:sql) { 'SELECT 1' }
 
-      @sql = 'SELECT 1'
+    before :each do
+      sql_tagger.exclusion_pattern = /^#{prefix}/
+      allow(sql_tagger).to receive(:caller).and_return(caller_result)
     end
 
     it 'skips stack strings that match @exclusion_pattern' do
-      expect(sql_tagger.tag(@sql)).to eq("/* #{@valid_stack_string} */ #{@sql}")
+      expect(sql_tagger.tag(sql)).to eq("/* #{valid_stack_string} */ #{sql}")
     end
 
     it 'returns the 1st stack string that does not match @exclusion_pattern' do
-      @caller_result.push(
+      caller_result.push(
         '/home/app/myapp/lib/document.rb:788',
         '/home/app/myapp/runner.rb:29'
       )
-      expect(sql_tagger.tag(@sql)).to eq("/* #{@valid_stack_string} */ #{@sql}")
+      expect(sql_tagger.tag(sql)).to eq("/* #{valid_stack_string} */ #{sql}")
     end
 
     it 'adds skipped stack strings into @exclusion_cache' do
       expect(sql_tagger.exclusion_cache).to be_empty
-      sql_tagger.tag(@sql)
-      @stack_strings_to_skip.each do |string|
+      sql_tagger.tag(sql)
+      stack_strings_to_skip.each do |string|
         expect(sql_tagger.exclusion_cache).to include(string)
       end
-      expect(sql_tagger.exclusion_cache.size).to eq(@stack_strings_to_skip.length)
+      expect(sql_tagger.exclusion_cache.size).to eq(stack_strings_to_skip.length)
     end
 
     it 'skips strings in @exclusion_cache' do
       correct_string = '/home/myapp/i.rb:2890'
-      @caller_result.push(correct_string)
-      sql_tagger.exclusion_cache.add(@valid_stack_string)
-      expect(sql_tagger.tag(@sql)).to eq("/* #{correct_string} */ #{@sql}")
+      caller_result.push(correct_string)
+      sql_tagger.exclusion_cache.add(valid_stack_string)
+      expect(sql_tagger.tag(sql)).to eq("/* #{correct_string} */ #{sql}")
     end
   end
 
