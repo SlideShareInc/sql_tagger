@@ -26,7 +26,7 @@ class SqlTagger
   # For example, given "SELECT 1", this will return something like
   # "/* program.rb:25:in `some_method' */ SELECT 1".
   #
-  # @param [String] sql SQL query string
+  # @param sql [String] SQL query string
   # @return [String] query string with a comment at the beginning
   def tag(sql)
     caller(2).each do |string|
@@ -44,7 +44,7 @@ class SqlTagger
 
   # Sets +@exclusion_pattern+.
   #
-  # @param [Regexp] regexp regular expression to be used to skip stack strings
+  # @param regexp [Regexp] regular expression to be used to skip stack strings
   def exclusion_pattern=(regexp)
     @exclusion_pattern = regexp
     @exclusion_cache.clear
@@ -83,7 +83,7 @@ class SqlTagger
   module ModuleMethods
     # Callback that includes SqlTagger::Initializer and does method aliasing.
     #
-    # @param [Module] base
+    # @param base [Module]
     def included(base)
       base.send(:include, SqlTagger::Initializer)
       self.instance_methods.map(&:to_s).grep(/_with_sql_tagger$/).each do |with_method|
