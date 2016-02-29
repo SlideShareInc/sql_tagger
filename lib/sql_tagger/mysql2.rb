@@ -1,6 +1,7 @@
 require 'sql_tagger'
 require 'mysql2'
 
+# Adapter for +Mysql2::Client+ from the mysql2 gem
 module SqlTagger::Mysql2
   extend SqlTagger::ModuleMethods
 

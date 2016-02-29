@@ -2,6 +2,7 @@ require 'set'
 
 # Instances of this class insert stack trace comments into SQL queries.
 class SqlTagger
+  # Version string
   VERSION = IO.read(
     File.join(File.dirname(__FILE__), '..', 'VERSION')
   ).chomp.freeze
@@ -57,9 +58,12 @@ class SqlTagger
     attr_accessor :default
   end
 
-  # Mixin that monkey patches the receiver's +initialize+ method to set
-  # +@sql_tagger+.
+  # @see .included
   module Initializer
+    # Callback that monkey patches the receiver's +initialize+ method to set
+    # +@sql_tagger+.
+    #
+    # @param base [Module]
     def self.included(base)
       base.send(:alias_method, :initialize_without_sql_tagger, :initialize)
       base.send(:alias_method, :initialize, :initialize_with_sql_tagger)
@@ -74,12 +78,14 @@ class SqlTagger
     # @return [SqlTagger] the SqlTagger used to tag queries for this instance
     attr_accessor :sql_tagger
 
+    # Sets +@sql_tagger+ before initializing
     def initialize_with_sql_tagger(*args, &block)
       @sql_tagger = SqlTagger.default
       initialize_without_sql_tagger(*args, &block)
     end
   end
 
+  # Extend this module in your adapter module
   module ModuleMethods
     # Callback that includes SqlTagger::Initializer and does method aliasing.
     #
