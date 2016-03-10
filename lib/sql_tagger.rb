@@ -2,6 +2,7 @@ require 'set'
 
 # Instances of this class insert stack trace comments into SQL queries.
 class SqlTagger
+  # Version string
   VERSION = IO.read(
     File.join(File.dirname(__FILE__), '..', 'VERSION')
   ).chomp.freeze
@@ -26,7 +27,7 @@ class SqlTagger
   # For example, given "SELECT 1", this will return something like
   # "/* program.rb:25:in `some_method' */ SELECT 1".
   #
-  # @param [String] sql SQL query string
+  # @param sql [String] SQL query string
   # @return [String] query string with a comment at the beginning
   def tag(sql)
     caller(2).each do |string|
@@ -44,7 +45,7 @@ class SqlTagger
 
   # Sets +@exclusion_pattern+.
   #
-  # @param [Regexp] regexp regular expression to be used to skip stack strings
+  # @param regexp [Regexp] regular expression to be used to skip stack strings
   def exclusion_pattern=(regexp)
     @exclusion_pattern = regexp
     @exclusion_cache.clear
@@ -57,9 +58,12 @@ class SqlTagger
     attr_accessor :default
   end
 
-  # Mixin that monkey patches the receiver's +initialize+ method to set
-  # +@sql_tagger+.
+  # @see .included
   module Initializer
+    # Callback that monkey patches the receiver's +initialize+ method to set
+    # +@sql_tagger+.
+    #
+    # @param base [Module]
     def self.included(base)
       base.send(:alias_method, :initialize_without_sql_tagger, :initialize)
       base.send(:alias_method, :initialize, :initialize_with_sql_tagger)
@@ -74,16 +78,18 @@ class SqlTagger
     # @return [SqlTagger] the SqlTagger used to tag queries for this instance
     attr_accessor :sql_tagger
 
+    # Sets +@sql_tagger+ before initializing
     def initialize_with_sql_tagger(*args, &block)
       @sql_tagger = SqlTagger.default
       initialize_without_sql_tagger(*args, &block)
     end
   end
 
+  # Extend this module in your adapter module
   module ModuleMethods
     # Callback that includes SqlTagger::Initializer and does method aliasing.
     #
-    # @param [Module] base
+    # @param base [Module]
     def included(base)
       base.send(:include, SqlTagger::Initializer)
       self.instance_methods.map(&:to_s).grep(/_with_sql_tagger$/).each do |with_method|
