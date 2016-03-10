@@ -1,7 +1,9 @@
 require 'spec_helper'
 require 'sql_tagger/mysql'
 
-describe Mysql do
+RSpec.describe Mysql do
+  let(:query) { 'SELECT 1' }
+
   before :all do
     @db = Mysql.new
   end
@@ -26,8 +28,9 @@ describe Mysql do
     end
 
     it 'calls SqlTagger#tag' do
-      @db.sql_tagger.should_receive(:tag).and_return('/* something.rb */ SELECT 1')
-      @db.query('SELECT 1').free
+      expect(@db.sql_tagger).to receive(:tag).with(query).
+        and_return("/* something.rb */ #{query}")
+      @db.query(query).free
     end
   end
 
@@ -41,8 +44,9 @@ describe Mysql do
     end
 
     it 'calls SqlTagger#tag' do
-      @db.sql_tagger.should_receive(:tag).and_return('/* something.rb */ SELECT 1')
-      @db.prepare('SELECT 1').close
+      expect(@db.sql_tagger).to receive(:tag).with(query).
+        and_return("/* something.rb */ #{query}")
+      @db.prepare(query).close
     end
   end
 end
