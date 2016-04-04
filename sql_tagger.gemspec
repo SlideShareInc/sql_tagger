@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency('mysql')
   s.add_development_dependency('mysql2')
+  s.add_development_dependency('pg')
 
   s.files = ['MIT-LICENSE', 'README.md', 'VERSION', 'sql_tagger.gemspec'] +
     Dir.glob('lib/**/*')
