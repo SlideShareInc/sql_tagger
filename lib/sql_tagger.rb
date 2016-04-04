@@ -17,7 +17,7 @@ class SqlTagger
   attr_reader :exclusion_cache
 
   def initialize
-    @exclusion_pattern = /^#{RbConfig::CONFIG['prefix']}|\/bundle\/|\/vendor\//
+    @exclusion_pattern = %r{\A#{RbConfig::CONFIG['prefix']}|/gems/}
     @exclusion_cache = Set.new
   end
 
