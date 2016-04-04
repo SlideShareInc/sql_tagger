@@ -25,4 +25,23 @@ RSpec.describe Mysql2::Client do
       @db.query(query)
     end
   end
+
+  describe '#prepare' do
+    let(:query) { 'SELECT ? AS num' }
+
+    it 'works' do
+      stmt = @db.prepare(query)
+      result = stmt.execute(7)
+      expect(result.to_a).to eq([{'num' => 7}])
+      stmt.close
+    end
+
+    it 'passes a tagged query to the original method' do
+      allow(@db.sql_tagger).to receive(:tag).with(query).
+        and_return("/* something.rb */ #{query}")
+      expect(@db).to receive(:prepare_without_sql_tagger).
+        with("/* something.rb */ #{query}")
+      @db.prepare(query)
+    end
+  end
 end

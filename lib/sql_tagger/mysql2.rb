@@ -9,6 +9,11 @@ module SqlTagger::Mysql2
   def query_with_sql_tagger(sql, opts ={})
     query_without_sql_tagger(@sql_tagger.tag(sql), opts)
   end
+
+  # @see Mysql2::Client#prepare
+  def prepare_with_sql_tagger(sql)
+    prepare_without_sql_tagger(@sql_tagger.tag(sql))
+  end
 end
 
 Mysql2::Client.send(:include, SqlTagger::Mysql2)
