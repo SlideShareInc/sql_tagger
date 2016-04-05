@@ -5,7 +5,7 @@ require 'pg'
 module SqlTagger::PG
   extend SqlTagger::ModuleMethods
 
-  # I wouldn't be surprised if I missed a method
+  # I wouldn't be surprised if I missed a method (checked against pg 0.18.4)
 
   [
     :async_exec,
