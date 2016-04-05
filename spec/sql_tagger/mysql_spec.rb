@@ -27,10 +27,12 @@ RSpec.describe Mysql do
       end
     end
 
-    it 'calls SqlTagger#tag' do
-      expect(@db.sql_tagger).to receive(:tag).with(query).
+    it 'passes a tagged query to the original method' do
+      allow(@db.sql_tagger).to receive(:tag).with(query).
         and_return("/* something.rb */ #{query}")
-      @db.query(query).free
+      expect(@db).to receive(:query_without_sql_tagger).
+        with("/* something.rb */ #{query}")
+      @db.query(query)
     end
   end
 
@@ -43,10 +45,12 @@ RSpec.describe Mysql do
       stmt.close
     end
 
-    it 'calls SqlTagger#tag' do
-      expect(@db.sql_tagger).to receive(:tag).with(query).
+    it 'passes a tagged query to the original method' do
+      allow(@db.sql_tagger).to receive(:tag).with(query).
         and_return("/* something.rb */ #{query}")
-      @db.prepare(query).close
+      expect(@db).to receive(:prepare_without_sql_tagger).
+        with("/* something.rb */ #{query}")
+      @db.prepare(query)
     end
   end
 end

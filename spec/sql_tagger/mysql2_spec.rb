@@ -18,10 +18,12 @@ RSpec.describe Mysql2::Client do
       expect(results.to_a).to eq([{:one => 1}])
     end
 
-    it 'calls SqlTagger#tag' do
+    it 'passes a tagged query to the original method' do
       query = 'SELECT 1'
-      expect(@db.sql_tagger).to receive(:tag).with(query).
+      allow(@db.sql_tagger).to receive(:tag).with(query).
         and_return("/* something.rb */ #{query}")
+      expect(@db).to receive(:query_without_sql_tagger).
+        with("/* something.rb */ #{query}", {})
       @db.query(query)
     end
   end
