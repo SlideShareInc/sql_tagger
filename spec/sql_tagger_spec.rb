@@ -70,4 +70,30 @@ RSpec.describe SqlTagger do
       expect(SqlTagger.default.exclusion_pattern).to be_a(Regexp)
     end
   end
+
+  describe SqlTagger::ModuleMethods do
+    describe '#included' do
+      let(:adapter_class) do
+        Module.new do
+          extend SqlTagger::ModuleMethods
+
+          def foo_with_sql_tagger; end
+
+          def bar_with_sql_tagger; end
+        end
+      end
+
+      let(:receiver_class) do
+        Class.new do
+          def foo; end
+        end
+      end
+
+      it 'does not fail for methods that do not exist on the receiver' do
+        expect {
+          receiver_class.send(:include, adapter_class)
+        }.not_to raise_error
+      end
+    end
+  end
 end
