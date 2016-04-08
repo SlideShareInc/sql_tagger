@@ -94,8 +94,10 @@ class SqlTagger
       base.send(:include, SqlTagger::Initializer)
       self.instance_methods.map(&:to_s).grep(/_with_sql_tagger$/).each do |with_method|
         target = with_method.sub(/_with_sql_tagger$/, '')
-        base.send(:alias_method, "#{target}_without_sql_tagger", target)
-        base.send(:alias_method, target, with_method)
+        if base.method_defined?(target)
+          base.send(:alias_method, "#{target}_without_sql_tagger", target)
+          base.send(:alias_method, target, with_method)
+        end
       end
     end
   end
