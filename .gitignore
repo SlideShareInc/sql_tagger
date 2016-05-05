@@ -1,4 +1,9 @@
 *.gem
-
+/.bundle
+/Gemfile.lock
 /.yardoc
 /doc
+
+# I'm going to disagree with Appraisal's suggestion of including generated
+# files in version control; we'll see how this goes.
+/gemfiles
