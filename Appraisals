@@ -1,4 +1,4 @@
-%w(2.8 2.9).each do |version|
+%w(2.9).each do |version|
   appraise "mysql-#{version}" do
     gem 'mysql', "~> #{version}.0"
   end

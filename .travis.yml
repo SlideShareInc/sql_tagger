@@ -15,7 +15,6 @@ rvm:
 
 gemfile:
   - gemfiles/mysql2_0.4.gemfile
-  - gemfiles/mysql_2.8.gemfile
   - gemfiles/mysql_2.9.gemfile
   - gemfiles/pg_0.16.gemfile
   - gemfiles/pg_0.17.gemfile
