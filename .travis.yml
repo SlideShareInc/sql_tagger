@@ -1,0 +1,23 @@
+language: ruby
+script: bundle exec rspec
+branches:
+  only:
+    - master
+
+services:
+  - mysql
+  - postgresql
+
+rvm:
+  - 2.3.1
+  - 2.2
+  - 2.1
+  - 2.0.0
+  - 1.9.3
+
+gemfile:
+  - gemfiles/mysql2_0.4.gemfile
+  - gemfiles/mysql_2.9.gemfile
+  - gemfiles/pg_0.16.gemfile
+  - gemfiles/pg_0.17.gemfile
+  - gemfiles/pg_0.18.gemfile
