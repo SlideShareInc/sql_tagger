@@ -21,7 +21,7 @@ RSpec.describe SqlTagger do
     end
 
     it 'skips stack strings that match @exclusion_pattern' do
-      expect(sql_tagger.tag(sql)).to eq("/* #{valid_stack_string} */ #{sql}")
+      expect(sql_tagger.tag(sql)).to eq("/*  #{valid_stack_string} */ #{sql}")
     end
 
     it 'returns the 1st stack string that does not match @exclusion_pattern' do
@@ -29,7 +29,7 @@ RSpec.describe SqlTagger do
         '/home/app/myapp/lib/document.rb:788',
         '/home/app/myapp/runner.rb:29'
       )
-      expect(sql_tagger.tag(sql)).to eq("/* #{valid_stack_string} */ #{sql}")
+      expect(sql_tagger.tag(sql)).to eq("/*  #{valid_stack_string} */ #{sql}")
     end
 
     it 'adds skipped stack strings into @exclusion_cache' do
@@ -45,7 +45,26 @@ RSpec.describe SqlTagger do
       correct_string = '/home/myapp/i.rb:2890'
       caller_result.push(correct_string)
       sql_tagger.exclusion_cache.add(valid_stack_string)
-      expect(sql_tagger.tag(sql)).to eq("/* #{correct_string} */ #{sql}")
+      expect(sql_tagger.tag(sql)).to eq("/*  #{correct_string} */ #{sql}")
+    end
+
+    context 'when @custom_tag_prefix is set as a proc' do
+      it 'prefixes the tag with a freshly resolved @custom_tag_prefix proc' do
+        string_stack = ['a', 'b']
+        sql_tagger.custom_tag_prefix = proc { string_stack.pop }
+        expect(sql_tagger.tag(sql)).
+          to eq("/* b #{valid_stack_string} */ #{sql}")
+        expect(sql_tagger.tag(sql)).
+          to eq("/* a #{valid_stack_string} */ #{sql}")
+      end
+    end
+
+    context 'when @custom_tag_prefix is set as a string' do
+      it 'prefixes the tag with the set @custom_tag_prefix' do
+        sql_tagger.custom_tag_prefix = 'a'
+        expect(sql_tagger.tag(sql)).
+          to eq("/* a #{valid_stack_string} */ #{sql}")
+      end
     end
   end
 
