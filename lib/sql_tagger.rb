@@ -7,6 +7,10 @@ class SqlTagger
     File.join(File.dirname(__FILE__), '..', 'VERSION')
   ).chomp.freeze
 
+  # @return [String, #call] a string or a proc which resolves to a string
+  #   to prefix the call trace tag
+  attr_accessor :custom_tag_prefix
+
   # @return [Regexp]
   #   regular expression used to match stack strings we should skip (usually
   #   because such stack strings aren't specific enough, like stack strings
@@ -33,7 +37,7 @@ class SqlTagger
     caller(2).each do |string|
       next if @exclusion_cache.member?(string)
       if string !~ @exclusion_pattern
-        return "/* #{string} */ #{sql}"
+        return "/* #{custom_tag_prefix_string} #{string} */ #{sql}"
       else
         @exclusion_cache.add(string)
       end
@@ -99,6 +103,19 @@ class SqlTagger
           base.send(:alias_method, target, with_method)
         end
       end
+    end
+  end
+
+  private
+
+  # Returns a freshly resolved custom tag prefix string
+  #
+  # @return [String] string to prefix the call trace tag
+  def custom_tag_prefix_string
+    if @custom_tag_prefix.respond_to?(:call)
+      @custom_tag_prefix.call
+    else
+      @custom_tag_prefix
     end
   end
 end
