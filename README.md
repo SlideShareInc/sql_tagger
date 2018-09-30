@@ -7,8 +7,8 @@ include a string from `Kernel#caller` that (hopefully) reveals what Ruby code
 was responsible for performing the query.
 
 To use this, just require the appropriate file. For example, to use this with
-the `mysql` gem, write `require 'sql_tagger/mysql'` instead of `require
-'mysql'`.
+the `mysql2` gem, write `require 'sql_tagger/mysql2'` instead of `require
+'mysql2'`.
 
 Before:
 
