@@ -1,9 +1,3 @@
-%w(2.9).each do |version|
-  appraise "mysql-#{version}" do
-    gem 'mysql', "~> #{version}.0"
-  end
-end
-
 # The gem will likely work with mysql2 versions before 0.4, but the tests won't
 # pass because earlier versions don't support prepared statements.
 %w(0.4).each do |version|

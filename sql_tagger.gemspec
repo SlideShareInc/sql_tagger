@@ -10,7 +10,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rspec', '~> 3.4')
 
   s.add_development_dependency('appraisal', '~> 2.1.0')
-  s.add_development_dependency('mysql')
   s.add_development_dependency('mysql2')
   s.add_development_dependency('pg')
 
